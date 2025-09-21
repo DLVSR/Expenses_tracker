@@ -1,0 +1,31 @@
+#myh1{
+    text-align: center;
+    font-size: 60px;
+}
+#mydiv{
+    text-align: center;
+}
+#inc{
+    background-color: blue; 
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    padding: 11px;
+    border-radius: 20px;
+}
+#re{
+    background-color: blue; 
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    padding: 11px;
+    border-radius: 20px;
+}
+#de{
+    background-color: blue; 
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    padding: 11px;
+    border-radius: 20px;
+}
