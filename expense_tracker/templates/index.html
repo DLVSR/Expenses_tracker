@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <h1>My Expense Tracker</h1>
+            <p>Track your spending with beautiful insights</p>
+        </header>
+
+        <main class="dashboard-grid">
+
+            <div class="card total-expenses-card">
+                <span class="card-label">Total Expenses</span>
+                <h2>${{ total_expenses|floatformat:2 }}</h2>
+                <p>{{ transaction_count }} transaction{{ transaction_count|pluralize }}</p>
+            </div>
+
+            <div class="card category-breakdown-card">
+                <h3>Category Breakdown</h3>
+                <div id="category-list" class="category-list">
+                    {% if category_breakdown %}
+                        {% for item in category_breakdown %}
+                        <div class="category-item">
+                            <span class="category-name">{{ item.category }}</span>
+                            <span class="category-amount">${{ item.total|floatformat:2 }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <span>No expenses yet to show insights.</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card add-expense-card">
+                <h3><span class="plus-icon">+</span> Add New Expense</h3>
+                <form id="expense-form" method="POST" action="{% url 'expense_tracker' %}">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="amount">Amount</label>
+                        <input type="number" id="amount" name="amount" placeholder="0.00" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category" required>
+                            <option value="" disabled selected>Select category</option>
+                            <option value="Food">Food</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date</label>
+                        <input type="date" id="date" name="date" value="{{ todays_date }}" required>
+                    </div>
+                    <button type="submit" class="add-btn">+ Add Expense</button>
+                </form>
+            </div>
+
+            <div class="card expense-list-card">
+                <div id="expense-list">
+                    {% if expenses %}
+                        {% for expense in expenses %}
+                        <div class="expense-item">
+                            <div class="expense-details">
+                                <p class="expense-category">{{ expense.category }}</p>
+                                <p class="expense-date">{{ expense.date|date:"F j, Y" }}</p>
+                            </div>
+                            <p class="expense-amount">${{ expense.amount }}</p>
+                            <form method="POST" action="{% url 'expense_tracker' %}" style="margin: 0;">
+                                {% csrf_token %}
+                                <input type="hidden" name="delete_id" value="{{ expense.id }}">
+                                <button type="submit" class="delete-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                                </button>
+                            </form>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <h3>No expenses yet</h3>
+                            <span>Start tracking your spending by adding your first expense.</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>
